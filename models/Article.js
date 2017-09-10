@@ -18,6 +18,10 @@ var ArticleSchema = new Schema({
   timeAndSummary: {
     type: String,
     required: true
+  },
+  saved: {
+    type: Boolean,
+    default: false
   }
   // This only saves one note's ObjectId, ref refers to the Note model
   // comment: {

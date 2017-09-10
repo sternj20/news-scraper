@@ -19,6 +19,7 @@ var Article = require("./models/Article.js");
 var exphbs = require("express-handlebars");
 var request = require("request");
 var cheerio = require("cheerio");
+var methodOverride = require('method-override');
 // Set mongoose to leverage built in JavaScript ES6 Promises
 mongoose.Promise = Promise;
 
@@ -36,6 +37,8 @@ app.set("view engine", "handlebars");
 app.use(bodyParser.urlencoded({
   extended: false
 }));
+
+app.use(methodOverride('_method'))
 
 // Make public a static dir
 app.use(express.static("public"));
@@ -100,7 +103,6 @@ app.get("/", function(req, res){
     if(error){
       console.log(error);
     } else {
-      console.log(doc)
       hbsObject.article = doc;
       res.render("index", hbsObject);
     }
@@ -108,10 +110,18 @@ app.get("/", function(req, res){
 });
 
 
+app.put("/:id", function(req, res) {
+
+  Article.findOneAndUpdate({_id: req.params.id}, {$set:{
+    saved: true
+  }}, function(error, result){
+    res.redirect("/");
+  })
+});
+
 
 
 // Listen on port 3000
 app.listen(3000, function() {
   console.log("App running on port 3000!");
 });
-// 
