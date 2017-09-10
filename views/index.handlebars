@@ -1,0 +1,14 @@
+<form method="get" action="/scrape">
+<button type="button submit" class="btn btn-default">Scrape new articles!</button>
+</form>
+
+{{#each article}}
+<div class="panel panel-default">
+	<div class="panel-body">
+		<a href="{{this.link}}" target="_blank">{{this.title}}</a>
+		<br>{{this.timeAndSummary}}
+	</div>
+</div>
+</ul>
+{{/each}}
+

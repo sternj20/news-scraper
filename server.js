@@ -16,6 +16,7 @@ var mongoose = require("mongoose");
 // var Note = require("./models/Note.js");
 var Article = require("./models/Article.js");
 // Our scraping tools
+var exphbs = require("express-handlebars");
 var request = require("request");
 var cheerio = require("cheerio");
 // Set mongoose to leverage built in JavaScript ES6 Promises
@@ -24,6 +25,12 @@ mongoose.Promise = Promise;
 
 // Initialize Express
 var app = express();
+
+// Set Handlebars as the default templating engine.
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+
 
 // Use morgan and body parser with our app
 app.use(bodyParser.urlencoded({
@@ -83,10 +90,22 @@ app.get("/scrape", function(req, res){
 
     });
   // Tell the browser that we finished scraping the text
-  res.send("Scrape Complete");
+  res.redirect("./")
 });
 });
 
+app.get("/", function(req, res){
+  Article.find({}, function(error, doc){
+    const hbsObject = {};
+    if(error){
+      console.log(error);
+    } else {
+      console.log(doc)
+      hbsObject.article = doc;
+      res.render("index", hbsObject);
+    }
+  });
+});
 
 
 
@@ -95,3 +114,4 @@ app.get("/scrape", function(req, res){
 app.listen(3000, function() {
   console.log("App running on port 3000!");
 });
+// 
