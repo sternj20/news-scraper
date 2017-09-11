@@ -68,18 +68,27 @@ router.get("/api/articles/saved", function(req, res){
     if(error){
       console.log(error);
     } else {
-      hbsObject.article = doc;
-      res.render("index", hbsObject);
+      hbsObject.savedArticle = doc;
+      res.render("saved", hbsObject);
     }
   });
 });
 
-router.put("/api/articles/:id", function(req, res) {
+router.put("/api/articles/savenew/:id", function(req, res) {
 
   Article.findOneAndUpdate({_id: req.params.id}, {$set:{
     saved: true
   }}, function(error, result){
     res.redirect("/");
+  })
+});
+
+router.put("/api/articles/unsave/:id", function(req, res) {
+
+  Article.findOneAndUpdate({_id: req.params.id}, {$set:{
+    saved: false
+  }}, function(error, result){
+    res.redirect("/api/articles/saved");
   })
 });
 

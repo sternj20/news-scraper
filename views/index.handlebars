@@ -11,8 +11,7 @@
 	<div class="panel-body">
 		<a href="{{this.link}}" target="_blank">{{this.title}}</a>
 		<br>{{this.timeAndSummary}}
-		{{this.id}}
-		<form action="/api/articles/{{this.id}}?_method=PUT" method="POST">
+		<form action="/api/articles/savenew/{{this.id}}?_method=PUT" method="POST">
 			<button type="submit">Save</button>
 		</form>
 	</div>
