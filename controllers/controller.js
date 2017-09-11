@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 // Requiring our Note and Article models
 // const Note = require("./models/Note.js");
 const Article = require("../models/Article.js");
+const Comment = require("../models/Comment.js")
 // Our scraping tools
 const exphbs = require("express-handlebars");
 const request = require("request");
@@ -89,7 +90,27 @@ router.put("/api/articles/unsave/:id", function(req, res) {
     saved: false
   }}, function(error, result){
     res.redirect("/api/articles/saved");
-  })
+  });
 });
+
+router.post("/api/articles/newcomment", function(req,res) {
+  console.log(req.body)
+  let newComment = new Comment(req.body);
+  newComment.save(function(error, doc) {
+    if(error) {
+      res.send(error);
+    } else {
+      Article.findOneAndUpdate({}, { $push: {"comments": doc._id } }, { new: true }, function(err, newdoc)  {
+        if(err) {
+          res.send(err);
+        } else {
+          res.send(newdoc);
+        }
+      });
+    }
+  });
+});
+
+
 
 module.exports = router;
