@@ -1,39 +1,39 @@
+<script type="text/javascript" src="/assets/js/saved.js"></script>
+
 {{#each savedArticle}}
 <div class="panel panel-default">
 	<div class="panel-body">
 		<a href="{{this.link}}" target="_blank">{{this.title}}</a>
 		<br>{{this.timeAndSummary}}
-		{{this.id}}
-		{{!-- <form action="/api/articles/{{this.id}}?_method=PUT" method="POST"> --}}
-			<button class="newComment" data-toggle="modal" data-target="#addCommentBox">Add a comment</button>
-		{{!-- </form> --}}
-		<form action="/api/articles/unsave/{{this.id}}?_method=PUT" method="POST">
-			<button type="submit">Delete from saved</button>
-		</form>
-	</div>
+   <button class="newComment" data-toggle="modal" data-target="#addCommentBox" data-id={{this.id}}>Add a comment</button>
+   <form action="/api/articles/unsave/{{this.id}}?_method=PUT" method="POST">
+     <button type="submit">Delete from saved</button>
+   </form>
+ </div>
 </div>
-</ul>
-{{/each}}
+
 
 
 <!-- Modal -->
 <div id="addCommentBox" class="modal fade" role="dialog">
   <div class="modal-dialog">
-
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Notes for Article</h4>
+        <div class="panel panel-default">
+          <div class="panel-body">
+          </div>
+        </div>
       </div>
       <div class="modal-body">
-        <form action="/api/articles/newComment" method="POST" role="form">
+        {{!-- <form action="/api/articles/newcommentsubmit/{{this.id}}" method="POST" role="form"> --}}
         	<div class="form-group">
         		<label for="">label</label>
-        		<textarea class="form-control" rows="7" placeholder="Add a comment" name="comment"></textarea>
+        		<textarea class="form-control commentContent" rows="7" placeholder="Add a comment"></textarea>
         	</div>
-        	<button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        	<button class="btn btn-primary commentSubmit"}>Submit</button>
+        {{!-- </form> --}}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -42,3 +42,4 @@
   </div>
 </div>
 
+{{/each}}

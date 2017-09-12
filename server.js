@@ -21,8 +21,6 @@ const methodOverride = require('method-override');
 const mongoose = require("mongoose");
 
 
-// Set mongoose to leverage built in JavaScript ES6 Promises
-mongoose.Promise = Promise;
 
 
 // Set Handlebars as the default templating engine.

@@ -11,6 +11,9 @@ const exphbs = require("express-handlebars");
 const request = require("request");
 const cheerio = require("cheerio");
 
+const mongoose = require("mongoose");
+// Set mongoose to leverage built in JavaScript ES6 Promises
+mongoose.Promise = Promise;
 
 router.get("/scrape", function(req, res){
   // Make a request call to grab the HTML body from the site of your choice
@@ -21,18 +24,11 @@ router.get("/scrape", function(req, res){
   const $ = cheerio.load(html);
 
   const result = {};
-
-  // Select each element in the HTML body from which you want information.
-  // NOTE: Cheerio selectors function similarly to jQuery's selectors,
-  // but be sure to visit the package's npm page to see how it works
   $(".has-image").each(function(i, element) {
     result.title = $(element).children(".item-info").children(".title").children("a").text();
     result.link = $(element).children(".item-info").children(".title").children("a").attr("href");
     result.timeAndSummary = $(element).children(".item-info").children(".teaser").children("a").text();
-          // Using our Article model, create a new entry
-      // This effectively passes the result object to the entry (and the title and link)
-      let entry = new Article(result);
-
+    let entry = new Article(result);
       // Now, save that entry to the db
       entry.save(function(err, doc) {
         // Log any errors
@@ -63,11 +59,11 @@ router.get("/", function(req, res){
   });
 });
 
-router.get("/api/articles/saved", function(req, res){
-  Article.find({saved:true},  function(error, doc){
-    let hbsObject = {};
-    if(error){
-      console.log(error);
+router.get("/api/articles/saved/", function(req, res){
+  let hbsObject = {};
+  Article.find({saved:true}, function(error, doc){
+    if (error) {
+      res.send(error);
     } else {
       hbsObject.savedArticle = doc;
       res.render("saved", hbsObject);
@@ -75,17 +71,17 @@ router.get("/api/articles/saved", function(req, res){
   });
 });
 
-router.put("/api/articles/savenew/:id", function(req, res) {
 
+
+router.put("/api/articles/savenew/:id", function(req, res) {
   Article.findOneAndUpdate({_id: req.params.id}, {$set:{
     saved: true
   }}, function(error, result){
     res.redirect("/");
-  })
+  });
 });
 
 router.put("/api/articles/unsave/:id", function(req, res) {
-
   Article.findOneAndUpdate({_id: req.params.id}, {$set:{
     saved: false
   }}, function(error, result){
@@ -93,18 +89,33 @@ router.put("/api/articles/unsave/:id", function(req, res) {
   });
 });
 
-router.post("/api/articles/newcomment", function(req,res) {
-  console.log(req.body)
-  let newComment = new Comment(req.body);
+router.get("/api/articles/newcomment/:id", function(req, res) {
+  Article.find({_id:req.params.id})
+    // ..and on top of that, populate the notes (replace the objectIds in the notes array with bona-fide notes)
+    .populate("comments")
+    // Now, execute the query
+    .exec(function(error, doc) {
+      // Send any errors to the browser
+      if (error) {
+        res.send(error);
+      } else {
+        res.send(doc[0].comments);
+      }
+    });
+  });
+
+router.post("/api/articles/newcommentsubmit/:id?", function(req,res) {
+  let comment = {comment: req.body.commentContent};
+  let newComment = new Comment(comment);
   newComment.save(function(error, doc) {
     if(error) {
       res.send(error);
     } else {
-      Article.findOneAndUpdate({}, { $push: {"comments": doc._id } }, { new: true }, function(err, newdoc)  {
+      Article.findOneAndUpdate({_id:req.params.id}, { $push: {"comments": doc._id } }, { new: true }, function(err, newdoc)  {
         if(err) {
           res.send(err);
         } else {
-          res.send(newdoc);
+          res.redirect("/api/articles/saved");
         }
       });
     }
