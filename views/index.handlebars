@@ -1,6 +1,7 @@
+
 {{#each article}}
 <div class="panel panel-default">
-	<div class="panel-body">
+	<div>
 		<a href="{{this.link}}" target="_blank">{{this.title}}</a>
 		<br>{{this.timeAndSummary}}
 		<form action="/api/articles/savenew/{{this.id}}?_method=PUT" method="POST">

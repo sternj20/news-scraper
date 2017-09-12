@@ -1,3 +1,9 @@
+body{
+	/*background-image: url('../img/background.jpg')*/
+	background-color: silver
+}
+
+
 /*NAVBAR*/
 
 .navbar-header{
@@ -5,5 +11,9 @@
 }
 .logo-text{
 	font-size:50px;
+}
+
+h1{
+	text-align:center;
 }
 
