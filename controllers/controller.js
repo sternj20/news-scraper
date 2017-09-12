@@ -77,7 +77,7 @@ router.put("/api/articles/savenew/:id", function(req, res) {
   Article.findOneAndUpdate({_id: req.params.id}, {$set:{
     saved: true
   }}, function(error, result){
-    res.redirect("/");
+    res.redirect("/api/articles/saved");
   });
 });
 
