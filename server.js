@@ -37,7 +37,7 @@ app.use(express.static("public"));
 app.use("/", router);
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/newsdb");
+mongoose.connect("mongodb://heroku_6flhd0sr:sjkepjnu9pefdeaap4angcqof3@ds129004.mlab.com:29004/heroku_6flhd0sr");
 var db = mongoose.connection;
 
 // Show any mongoose errors
