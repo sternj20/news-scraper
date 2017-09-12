@@ -1,5 +1,6 @@
 const renderModal = function(arr){
 	$(".modal-body").empty();
+	$(".commentContent").val('');
 	arr.forEach(function(element){
 		let div = $('<div class ="panel panel-default">');
 		let divBody = $('<div class="panel-body">');
@@ -27,7 +28,6 @@ $(document).ready(function() {
 			success:function(data){
 				activeArticleComments = data;
 				renderModal(data);
-				console.log(activeArticleComments)
 			}
 		});
 	});
@@ -42,10 +42,20 @@ $(document).ready(function() {
 			contentType: 'application/json',
 			method:"POST",
 			success:function(data){
+				$.ajax({
+					//concatenate this id onto the path so we can reference it on the backend
+					url:'/api/articles/newcomment/' + articleID,
+					data:{},
+					method:"GET",
+					success:function(data){
+						activeArticleComments = data;
+						renderModal(data);
+					}
+				});
 			}
 		});
+		});
 	});
-});
 
 
 

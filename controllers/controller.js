@@ -104,7 +104,7 @@ router.get("/api/articles/newcomment/:id", function(req, res) {
     });
   });
 
-router.post("/api/articles/newcommentsubmit/:id?", function(req,res) {
+router.post("/api/articles/newcommentsubmit/:id", function(req,res) {
   let comment = {comment: req.body.commentContent};
   let newComment = new Comment(comment);
   newComment.save(function(error, doc) {
@@ -115,7 +115,7 @@ router.post("/api/articles/newcommentsubmit/:id?", function(req,res) {
         if(err) {
           res.send(err);
         } else {
-          res.redirect("/api/articles/saved");
+          res.redirect("/");
         }
       });
     }
