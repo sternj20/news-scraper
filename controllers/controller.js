@@ -122,6 +122,20 @@ router.post("/api/articles/newcommentsubmit/:id", function(req,res) {
   });
 });
 
-
+router.delete("/api/articles/deletecomment/:id", function(req, res) {
+  Comment.findById(req.params.id, function(err, article) {
+    if(err){
+      res.send(error);
+    } else{
+      article.remove(function(err){
+        if(err){
+          res.send(error);
+        } else{
+          res.send();
+        };
+      });
+    };
+  });
+});
 
 module.exports = router;

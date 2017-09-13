@@ -4,10 +4,12 @@ const renderModal = function(arr){
 	arr.forEach(function(element){
 		let div = $('<div class ="panel panel-default">');
 		let divBody = $('<div class="panel-body">');
+		let button = $('<button type="submit">');
+		button.text('Delete comment').addClass('btn deleteComment').attr("data-id", element._id)
 		divBody.text(element.comment);
 		div.append(divBody);
+		div.append(button);
 		$(".modal-body").append(div);
-		console.log(element);
 	});
 };
 
@@ -15,7 +17,6 @@ const renderModal = function(arr){
 
 $(document).ready(function() {
 	let articleID;
-	let activeArticleComments;
 	//when new add new comment button is clicked
 	$(".newComment").on("click", function(){
 		//grab the unique id of the article that user wants to add comment on
@@ -26,7 +27,6 @@ $(document).ready(function() {
 			data:{},
 			method:"GET",
 			success:function(data){
-				activeArticleComments = data;
 				renderModal(data);
 			}
 		});
@@ -35,7 +35,6 @@ $(document).ready(function() {
 	$(".commentSubmit").on("click", function(){
 		let comment = {};
 		comment.commentContent = $(".commentContent").val().trim();
-		console.log('this is the first comment' + comment)
 		$.ajax({
 			url:'/api/articles/newcommentsubmit/' + articleID,
 			data: JSON.stringify(comment),
@@ -54,8 +53,27 @@ $(document).ready(function() {
 				});
 			}
 		});
+	});
+
+	$(".modal-body").on("click", ".deleteComment", function(){
+		let commentID = $(this).attr("data-id")
+		$.ajax({
+			url:'/api/articles/deletecomment/' + commentID,
+			method:"DELETE",
+			success:function(data){
+				$.ajax({
+					url:'/api/articles/newcomment/' + articleID,
+					data:{},
+					method:"GET",
+					success:function(data){
+						activeArticleComments = data;
+						renderModal(data);
+					}
+				});
+			}
 		});
 	});
+});
 
 
 

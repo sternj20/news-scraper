@@ -11,7 +11,7 @@
 
 
 
-var express = require("express");
+const express = require("express");
 const body = require("body-parser");
 const path = require("path");
 const app = express();
@@ -38,7 +38,7 @@ app.use("/", router);
 
 // Database configuration with mongoose
 mongoose.connect("mongodb://heroku_6flhd0sr:sjkepjnu9pefdeaap4angcqof3@ds129004.mlab.com:29004/heroku_6flhd0sr");
-var db = mongoose.connection;
+const db = mongoose.connection;
 
 // Show any mongoose errors
 db.on("error", function(error) {
